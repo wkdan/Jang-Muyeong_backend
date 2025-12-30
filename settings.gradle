@@ -1,9 +1,15 @@
-rootProject.name = "remittance"
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
 
-include(
-        "remittance-domain",
-        "remittance-application",
-        "remittance-infra",
-        "remittance-presentation",
-        "remittance-api"
-)
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+
+rootProject.name = "remittance"
+include "remittance-domain", "remittance-application", "remittance-infra", "remittance-presentation", "remittance-api"
