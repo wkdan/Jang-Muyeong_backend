@@ -9,13 +9,16 @@ import com.jangmuyeong.remittance.application.dto.command.RemitCommand;
 import com.jangmuyeong.remittance.application.dto.result.RemitResult;
 import com.jangmuyeong.remittance.application.service.RemittanceService;
 import com.jangmuyeong.remittance.presentation.request.RemitRequest;
-import com.jangmuyeong.remittance.presentation.response.ApiResponse;
+import com.jangmuyeong.remittance.presentation.response.RsData;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 /**
  * 이체(송금) API 컨트롤러
  */
+@Tag(name = "Remittances", description = "계좌 간 송금(이체) API")
 @RestController
 @RequestMapping("/remittances")
 public class RemittanceController {
@@ -29,9 +32,10 @@ public class RemittanceController {
 	/**
 	 * 이체 API
 	 */
+	@Operation(summary = "송금(이체)")
 	@PostMapping
-	public ApiResponse<RemitResult> remit(@Valid @RequestBody RemitRequest req) {
-		return ApiResponse.of(service.remit(
+	public RsData<RemitResult> remit(@Valid @RequestBody RemitRequest req) {
+		return RsData.of(service.remit(
 			new RemitCommand(req.fromAccountId(), req.toAccountId(), req.amount())
 		));
 	}

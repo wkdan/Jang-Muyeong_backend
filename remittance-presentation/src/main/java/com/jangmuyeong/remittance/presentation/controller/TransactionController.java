@@ -9,12 +9,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jangmuyeong.remittance.application.service.TransactionQueryService;
-import com.jangmuyeong.remittance.presentation.response.ApiResponse;
+import com.jangmuyeong.remittance.presentation.response.RsData;
 import com.jangmuyeong.remittance.presentation.response.TransactionItemResponse;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * 거래내역 조회 API 컨트롤러
  */
+@Tag(name = "Transactions", description = "거래내역 조회 API")
 @RestController
 @RequestMapping("/accounts/{accountId}/transactions")
 public class TransactionController {
@@ -31,13 +35,13 @@ public class TransactionController {
 	 * @param accountId 대상 계좌 ID
 	 * @param size      반환 개수(기본 20)
 	 */
+	@Operation(summary = "거래내역 최신순 조회")
 	@GetMapping
-	public ApiResponse<List<TransactionItemResponse>> latest(
+	public RsData<List<TransactionItemResponse>> latest(
 		@PathVariable("accountId") Long accountId,
 		@RequestParam(defaultValue = "20") int size
 	) {
-		// 요구사항: 최신순(정렬은 queryService/infra에서 보장)
-		var list = queryService.latest(accountId, size).stream()
+		List<TransactionItemResponse> list = queryService.latest(accountId, size).stream()
 			.map(e -> new TransactionItemResponse(
 				e.getId(),
 				e.getType().name(),
@@ -48,6 +52,6 @@ public class TransactionController {
 			))
 			.toList();
 
-		return ApiResponse.of(list);
+		return RsData.of(list);
 	}
 }
