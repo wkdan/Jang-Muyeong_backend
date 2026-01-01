@@ -49,40 +49,44 @@ API 명세서:
 - remittance-api  
   Spring Boot 실행 모듈, 설정
 
+## 5. ERD 및 API 명세
+<img width="825" height="646" alt="Untitled" src="https://github.com/user-attachments/assets/7f009e3d-788c-459f-82af-769ab52e231e" />
 
-## 5. 기능 구현 사항
+### API 명세 : https://github.com/wkdan/Jang-Muyeong_backend/wiki/API-%EB%AA%85%EC%84%B8%EC%84%9C
 
-### 5.1 계좌
+## 6. 기능 구현 사항
+
+### 6.1 계좌
 
 - 계좌 생성
 - 계좌 조회 (잔액 포함)
 - 입금
 - 출금
 
-### 5.2 송금
+### 6.2 송금
 
 - 계좌 간 송금
 - 잔액 부족 시 송금 실패
 - 동일 계좌로의 송금 방지
 
-### 5.3 거래 내역 (Ledger)
+### 6.3 거래 내역 (Ledger)
 
 - 모든 금액 변동(입금/출금/송금)에 대해 거래 내역 기록
 - 거래 시점의 잔액(balance_after) 저장
 - 계좌 기준 거래 내역 조회 가능
 
 
-## 6. 동시성 및 정합성 고려
+## 7. 동시성 및 정합성 고려
 
 본 프로젝트는 동시 요청 환경에서 데이터 정합성을 유지하기 위해 DB 락 기반 설계를 적용했습니다.
 
-### 6.1 계좌 잔액 동시성
+### 7.1 계좌 잔액 동시성
 
 - 입금, 출금, 송금 시 계좌를 PESSIMISTIC_WRITE(SELECT FOR UPDATE)로 조회
 - 잔액 검증 → 변경 → 저장 과정이 하나의 트랜잭션 내에서 직렬화됨
 - 동일 계좌에 대한 동시 요청에서도 잔액 불일치 방지
 
-### 6.2 일일 한도(Daily Limit) 동시성
+### 7.2 일일 한도(Daily Limit) 동시성
 
 - 일일 한도 엔티티 조회/생성 시에도 락 적용
 - 동일 날짜에 동시 요청이 들어와도
