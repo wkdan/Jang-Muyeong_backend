@@ -48,7 +48,8 @@ public class TransactionController {
 				e.getCounterpartyAccountId(),
 				e.getAmount(),
 				e.getFeeAmount(),
-				e.getOccurredAt()
+				e.getOccurredAt(),
+				e.getBalanceAfter()
 			))
 			.toList();
 

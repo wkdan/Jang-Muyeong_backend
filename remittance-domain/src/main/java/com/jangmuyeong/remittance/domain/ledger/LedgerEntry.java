@@ -7,6 +7,7 @@ import java.time.Instant;
  * 어떤 거래가 언제 발생했는지를 기록
  * - amount: 실제 이체 or 입출금 금액
  * - feeAmount: 수수로 금액
+ * - balanceAfter: 거래 후 잔액(수수료 포함 총 차감/반영된 결과)
  */
 public class LedgerEntry {
 
@@ -17,9 +18,10 @@ public class LedgerEntry {
 	private final long amount;
 	private final long feeAmount;
 	private final Instant occurredAt;
+	private final long balanceAfter;
 
 	public LedgerEntry(Long id, Long accountId, Long counterpartyAccountId,
-		TransactionType type, long amount, long feeAmount, Instant occurredAt) {
+		TransactionType type, long amount, long feeAmount, Instant occurredAt, long balanceAfter) {
 		this.id = id;
 		this.accountId = accountId;
 		this.counterpartyAccountId = counterpartyAccountId;
@@ -27,6 +29,7 @@ public class LedgerEntry {
 		this.amount = amount;
 		this.feeAmount = feeAmount;
 		this.occurredAt = occurredAt;
+		this.balanceAfter = balanceAfter;
 	}
 
 	public Long getId() { return id; }
@@ -36,4 +39,5 @@ public class LedgerEntry {
 	public long getAmount() { return amount; }
 	public long getFeeAmount() { return feeAmount; }
 	public Instant getOccurredAt() { return occurredAt; }
+	public long getBalanceAfter() { return balanceAfter; }
 }

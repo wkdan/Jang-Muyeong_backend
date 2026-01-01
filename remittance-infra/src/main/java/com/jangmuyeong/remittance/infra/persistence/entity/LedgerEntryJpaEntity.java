@@ -47,13 +47,17 @@ public class LedgerEntryJpaEntity {
 	@Column(name = "occurred_at", nullable = false)
 	private Instant occurredAt;
 
+	@Column(name = "balance_after", nullable = false)
+	private long balanceAfter;
+
 	public LedgerEntryJpaEntity(Long accountId, Long counterpartyAccountId, String type,
-		long amount, long feeAmount, Instant occurredAt) {
+		long amount, long feeAmount, Instant occurredAt, long balanceAfter) {
 		this.accountId = accountId;
 		this.counterpartyAccountId = counterpartyAccountId;
 		this.type = type;
 		this.amount = amount;
 		this.feeAmount = feeAmount;
 		this.occurredAt = occurredAt;
+		this.balanceAfter = balanceAfter;
 	}
 }

@@ -21,5 +21,6 @@ public record TransactionItemResponse(
 	Long counterpartyAccountId,
 	long amount,
 	long feeAmount,
-	Instant occurredAt
+	Instant occurredAt,
+	long balanceAfter
 ) {}

@@ -14,7 +14,8 @@ public class LedgerMapper {
 			e.getType().name(),
 			e.getAmount(),
 			e.getFeeAmount(),
-			e.getOccurredAt()
+			e.getOccurredAt(),
+			e.getBalanceAfter()
 		);
 	}
 
@@ -27,7 +28,8 @@ public class LedgerMapper {
 			TransactionType.valueOf(e.getType()),
 			e.getAmount(),
 			e.getFeeAmount(),
-			e.getOccurredAt()
+			e.getOccurredAt(),
+			e.getBalanceAfter()
 		);
 	}
 }

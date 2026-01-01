@@ -56,7 +56,7 @@ public class MoneyService {
 
 		// 입금 원장 기록
 		ledgerPort.save(new LedgerEntry(null, saved.getId(), null, TransactionType.DEPOSIT,
-			command.amount(), 0L, Instant.now(clock)));
+			command.amount(), 0L, Instant.now(clock), saved.getBalance()));
 
 		return new BalanceResult(saved.getId(), saved.getAccountNo(), saved.getBalance());
 	}
@@ -83,7 +83,7 @@ public class MoneyService {
 
 		// 출금 원장 기록
 		ledgerPort.save(new LedgerEntry(null, saved.getId(), null, TransactionType.WITHDRAW,
-			command.amount(), 0L, Instant.now(clock)));
+			command.amount(), 0L, Instant.now(clock), saved.getBalance()));
 
 		return new BalanceResult(saved.getId(), saved.getAccountNo(), saved.getBalance());
 	}

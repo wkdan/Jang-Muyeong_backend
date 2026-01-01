@@ -96,12 +96,15 @@ public class RemittanceService {
 		Instant now = Instant.now(clock);
 
 		// 송금/수취/수수료를 기록으로 남김
+		long fromBalanceAfter = savedFrom.getBalance(); // amount + fee 총 차감 후 잔액
+		long toBalanceAfter = savedTo.getBalance();     // 입금 후 잔액
+
 		ledgerPort.save(new LedgerEntry(null, savedFrom.getId(), savedTo.getId(), TransactionType.TRANSFER_OUT,
-			command.amount(), 0L, now));
+			command.amount(), 0L, now, fromBalanceAfter));
 		ledgerPort.save(new LedgerEntry(null, savedFrom.getId(), savedTo.getId(), TransactionType.FEE,
-			0L, fee, now));
+			0L, fee, now, fromBalanceAfter));
 		ledgerPort.save(new LedgerEntry(null, savedTo.getId(), savedFrom.getId(), TransactionType.TRANSFER_IN,
-			command.amount(), 0L, now));
+			command.amount(), 0L, now, toBalanceAfter));
 
 		return new RemitResult(
 			savedFrom.getId(),
