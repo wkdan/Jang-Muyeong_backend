@@ -2,6 +2,7 @@ package com.jangmuyeong.remittance.error;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -68,5 +69,15 @@ public class GlobalExceptionHandler {
 		log.error("Unhandled exception", e);
 		return ResponseEntity.status(500)
 			.body(ErrorResponse.of("INTERNAL_ERROR", "internal error"));
+	}
+
+	/**
+	 * DB 제약 위반(유니크 등) 처리
+	 * - 중복 계좌번호, 일 한도 row 동시 생성 경합 등이 500으로 떨어지지 않도록 409로 변환
+	 */
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException e) {
+		return ResponseEntity.status(409)
+			.body(ErrorResponse.of("DUPLICATE_RESOURCE", "duplicate resource"));
 	}
 }
