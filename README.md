@@ -20,10 +20,9 @@ http://localhost:8080/swagger-ui.html
 - 거래 내역(원장) 기록 및 조회
 - 동시성 환경에서의 잔액/한도 정합성 보장
 
-API 명세서: 
 
 
-## 3. 기술 스택
+## 3. 기술 스택 
 
 - Java 21
 - Spring Boot 4.0.1
@@ -96,10 +95,52 @@ API 명세서:
 
 ## 8. 예외 및 검증 정책
 
-- 계좌가 존재하지 않을 경우: 404 (ACCOUNT_NOT_FOUND)
-- 잔액 부족, 동일 계좌 송금 등 비즈니스 규칙 위반: 400
-- 요청 값 검증 실패(@Valid): 400
-- JSON 파싱 오류: 400
-- 그 외 서버 오류: 500
+본 서비스는 예외 상황에서도 일관된 응답을 제공하기 위해 전역 예외 처리기를 통해 아래 정책으로 HTTP 응답을 반환합니다.
+
+- **도메인(비즈니스) 예외 (`DomainException`)**
+  - `ACCOUNT_NOT_FOUND` → **404 Not Found**
+  - 그 외 비즈니스 규칙 위반(한도 초과, 비활성 계좌, 동일 계좌 이체 금지 등) → **400 Bad Request**
+
+- **요청 DTO 검증 실패 (`@Valid`, `MethodArgumentNotValidException`)**
+  - 입력값 누락/범위 오류(예: amount <= 0 등) → **400 Bad Request**
+  - 응답 코드: `VALIDATION_ERROR`
+
+- **JSON 파싱 실패 (`HttpMessageNotReadableException`)**
+  - 잘못된 JSON 형식/타입 미스매치 → **400 Bad Request**
+  - 응답 코드: `INVALID_JSON`
+
+- **DB 제약 위반 (`DataIntegrityViolationException`)**
+  - 유니크 제약 위반(예: 중복 계좌번호, 일 한도 row 동시 생성 경합 등) → **409 Conflict**
+  - 응답 코드: `DUPLICATE_RESOURCE`
+
+- **기타 예외**
+  - 예측하지 못한 서버 오류 → **500 Internal Server Error**
+  - 응답 코드: `INTERNAL_ERROR` (서버 로그에 stacktrace 기록)
 
 모든 에러는 공통 에러 응답 포맷으로 반환됩니다.
+
+## 9. 외부 라이브러리 사용 목적
+
+본 과제에서는 요구사항 구현과 개발 생산성을 위해 아래의 외부 라이브러리 및 오픈소스를 사용했습니다.
+
+- **Spring Boot Starter Web**  
+  - RESTful API 구현 및 내장 서버(Tomcat) 제공
+
+- **Spring Boot Starter Data JPA (Hibernate)**  
+  - JPA 기반 ORM을 통한 계좌, 거래내역, 한도 정보 영속화
+
+- **Spring Boot Starter Validation**  
+  - 요청 DTO에 대한 입력값 검증(@Valid, @NotNull, @Min 등)
+
+- **SpringDoc OpenAPI (Swagger UI)**  
+  - API 명세 자동 생성 및 테스트 편의를 위한 문서 제공  
+  - `/swagger-ui.html` 또는 `/swagger-ui/index.html` 접근 가능
+
+- **MySQL Connector/J**  
+  - Docker Compose 환경에서 MySQL 데이터베이스 연결
+
+- **H2 Database**  
+  - 로컬 개발 및 테스트 환경에서의 인메모리 DB 사용
+
+- **Lombok (infra 계층 한정)**  
+  - Entity 및 매핑 코드에서의 보일러플레이트 코드 감소
